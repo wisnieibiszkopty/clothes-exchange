@@ -9,12 +9,11 @@ const pool = new Pool({
 
 // create queries for api
 async function login(email){
-    const result = await pool.query(`SELECT password FROM users WHERE email=$1;`, [email]);
-    let exists = false;
+    const result = await pool.query(`SELECT id, password FROM users WHERE email=$1;`, [email]);
     if(result.rows.length !== 0){
-        exists = true;
+        return result.rows[0];
     }
-    return {"exists": exists, "password": result.rows[0].password};
+    return null;
 }
 
 async function doesUserExist(name, email){
@@ -46,6 +45,7 @@ async function addUser(name, email, password){
 }
 
 async function editUser(id, field, value){
+    console.log("edittting!");
     const sqlQuery = `UPDATE users SET ${field}=$1 WHERE id=$2`;
     await pool.query(sqlQuery, [value, id]);
 }
@@ -70,8 +70,9 @@ async function addProduct(product){
     const result = await pool.query(sqlQuery, parameters);
 }
 
-async function editProduct(){
-
+async function editProduct(id, field, value){
+    const sqlQuery = `UPDATE products SET ${field}=$1 WHERE id=$2`;
+    await pool.query(sqlQuery, [value, id]);
 }
 
 async function deleteProduct(id){
@@ -91,6 +92,19 @@ async function getProduct(id){
     } catch(err){
         throw(err);
     }
+}
+
+// make query better
+async function getProducts(sort, order, page, filters){
+    const sqlQuery = `SELECT p.*, u.name, u.picture FROM products p
+    INNER JOIN users u ON p.owner_id = u.id`;
+    try{
+        const results = await pool.query(sqlQuery);
+        return results.rows;
+    } catch (err){
+        throw(err);
+    }
+
 }
 
 async function addReview(userId, reviewerId, rating){
@@ -115,6 +129,42 @@ async function deleteFromFavourite(productId, userId){
     const result = await pool.query(`DELETE FROM favourites WHERE user_id=$1 AND product_id=$2`, [userId, productId]);
 }
 
+async function changeProductStatus(productId, sold){
+    await pool.query(`UPDATE products SET sold=$1 WHERE id=$2`, [sold, productId]);
+}
+
+async function addOrder(productId, buyerId, paymentMethod, deliveryAdress){
+    const sqlQuery = `INSERT INTO orders (product_id, delivery_adress, payment_method, buyer_id, status)
+        VALUES ($1, $2, $3, $4, $5)`;
+    await pool.query(sqlQuery, [productId, deliveryAdress, paymentMethod, buyerId, "waiting"]);
+
+}
+
+async function editOrder(id, status){
+    await pool.query(`UPDATE orders SET status=$1 WHERE id=$2`, [status, id]);
+}
+
+async function getOrdersOfBuyer(id){
+    const sqlQuery = `SELECT o.*, u.name, p.price, p.name FROM orders o 
+    INNER JOIN products p ON o.product_id=p.id
+    INNER JOIN users u ON o.buyer_id=u.id 
+    WHERE buyer_id=$1`;
+    const results = await pool.query(sqlQuery, id);
+    console.log(results.rows);
+    return results.rows;
+}
+
+async function getOrdersOfSeller(sellerId){
+    const sqlQuery = `SELECT o.*, u.name, p.price, p.name FROM orders o 
+    INNER JOIN products p ON o.product_id=p.id
+    INNER JOIN users u ON u.id = p.owner_id
+    WHERE p.owner_id=$1`;
+    const results = await pool.query(sqlQuery, [sellerId]);
+    console.log(results);
+    return results.rows;
+
+}
+
 module.exports = {
     login,
     doesUserExist,
@@ -126,9 +176,15 @@ module.exports = {
     editProduct,
     deleteProduct,
     getProduct,
+    getProducts,
     addToFavourite,
     deleteFromFavourite,
     addReview,
     editReview,
-    deleteReview
+    deleteReview,
+    changeProductStatus,
+    addOrder,
+    editOrder,
+    getOrdersOfBuyer,
+    getOrdersOfSeller
 };

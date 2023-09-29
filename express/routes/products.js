@@ -2,9 +2,16 @@ const express = require('express');
 const router = express.Router();
 const db = require('../queries');
 
-router.get('/', (req, res) => {
-   res.setHeader('Content-Type', 'application/json');
-   res.end(JSON.stringify({'app':'clothes exchange'}));
+router.get('/', async (req, res) => {
+   const sortBy = req.body.sortBy;
+   const order = req.body.order;
+   try{
+      const results = await db.getProducts();
+      res.send(results);
+   } catch(err){
+      console.error(err);
+      res.sendStatus(400);
+   }
 });
 
 // getting particular item

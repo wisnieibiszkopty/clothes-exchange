@@ -21,26 +21,14 @@ router.get('/:id', async function(req, res, next) {
 });
 
 // edit user data
+// fix it now
 router.put('/:id', async (req, res, next) => {
   const field = req.query.field;
-  let fieldToEdit;
-
-  // only description is working now properly
-  switch(field){
-    case "password":
-      fieldToEdit = "password";
-      break;
-    case "description":
-      fieldToEdit = "description";
-      break;
-    default:
-      res.status(400).send("There is no field of that type");
-  }
-
-  console.log(req.body.value);
+  const value = req.query.value;
+  const id = req.params.id;
 
   try{
-    await db.editUser(req.params.id, field, req.body.value);
+    await db.editUser(id, field, value);
     res.status(200).send("Field edited");
   } catch(err){
     console.error(err.message);
@@ -49,14 +37,16 @@ router.put('/:id', async (req, res, next) => {
 
 });
 
-// edit user avatar
+// edit user
 router.put('/avatar/:id', utils.avatarUpload.single('avatar'),  async (req, res, next) => {
   const id = req.params.id;
   const filename = req.file.originalname;
   try{
-    const result = await db.editUser(id, "picture", filename);
+    await db.editUser(id, "picture", filename);
+    res.sendStatus(200);
   } catch(err){
     console.log(err);
+    res.sendStatus(400);
   }
 });
 

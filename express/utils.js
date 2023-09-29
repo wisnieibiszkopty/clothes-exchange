@@ -1,6 +1,9 @@
 const jwt = require("jsonwebtoken");
 const multer = require('multer');
 
+// cannot change photos urls in database for some reason, check it
+// i guess i should send response
+
 const avatarStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, 'public/images/avatars/');

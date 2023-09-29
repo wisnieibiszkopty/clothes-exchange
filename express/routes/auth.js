@@ -8,16 +8,17 @@ const db = require('../queries');
 const secretKey = 'twojastararobimiloda';
 
 router.get('/', async (req, res, next) => {
-    const { email, password } = req.body;
+    const { email, password } = req.query;
 
     try{
         const data = await db.login(email);
-        if(data.exists){
+        if(data.length !== 0){
             bcrypt.compare(password, data.password, (err, result) => {
                 if(err){
                     throw(err);
                 } else if(result){
-                    res.status(200).json({"token": jwt.generateToken(email)});
+                    res.status(200).json({"token": jwt.generateToken(email),
+                    "id": data.id});
                 } else{
                     res.status(400).json({"message": "Bad request"});
                 }
@@ -54,12 +55,12 @@ router.post('/', async (req, res, next) => {
                const token = jwt.generateToken(email);
                console.log("token: " + token);
 
-               res.status(201).json({"token": token});
+               res.status(201).json({"token": token, "user": {"name": name, "email": email}});
            });
 
        } else{
            console.log("User exist");
-           res.send('Bad Request');
+           res.sendStatus(400).send('Bad Request');
        }
 
    } catch(err){
