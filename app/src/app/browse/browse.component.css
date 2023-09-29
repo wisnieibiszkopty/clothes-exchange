@@ -1,0 +1,27 @@
+main{
+  display: flex;
+  flex-direction: row;
+}
+
+.options{
+  height: 600px;
+  width: 20%;
+}
+
+.grid{
+  width: 80%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 40px;
+}
+
+@media only screen and (max-width: 1000px) {
+  main{
+    flex-direction: column;
+  }
+
+  .grid, .options{
+    width: 100%;
+  }
+
+}

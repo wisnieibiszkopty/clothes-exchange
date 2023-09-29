@@ -1,0 +1,19 @@
+div{
+  display: flex;
+  justify-content: space-around;
+}
+
+article{
+
+}
+
+img{
+  width: 75%;
+  height: 75%;
+}
+
+@media only screen and (max-width: 768px){
+  div{
+    flex-direction: column;
+  }
+}
