@@ -17,7 +17,7 @@ const routes: Routes = [
   { path: 'signin', component: SigninComponent},
   { path: 'signup', component: SignupComponent},
   { path: 'profile/:id', component: ProfileComponent},
-  { path: 'add', component: AddComponent, canActivate: [authGuard()]},
+  { path: 'add', component: AddComponent, canActivate: []},
   { path: 'browse', component: BrowseComponent},
   { path: 'product', component: ProductDetailsComponent},
   { path: '**', pathMatch: "full", component: PageNotFoundComponent}

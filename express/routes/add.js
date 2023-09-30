@@ -6,6 +6,7 @@ const utils = require("../utils");
 // for now if other user upload file with same name it will override existing file, fix it
 router.post('/', utils.verifyToken, utils.productPicturesUpload.array('pictures', 10),
     async (req, res) => {
+    console.log(req.body);
     let filesNames = [];
     req.files.forEach((file) => {
         filesNames.push(file.originalname);
@@ -14,7 +15,7 @@ router.post('/', utils.verifyToken, utils.productPicturesUpload.array('pictures'
     data.filesNames = filesNames;
 
     try{
-        await db.addProduct(req.body);
+        await db.addProduct(req.body.product);
         res.sendStatus(201).send({"message": "Product created"});
     } catch(err){
         console.error(err.message);

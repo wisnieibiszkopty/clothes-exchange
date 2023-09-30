@@ -1,1 +1,40 @@
-<p>add works!</p>
+<!--
+  Add validation
+-->
+
+<div>
+  <form #form="ngForm" (ngSubmit)="onSubmit()">
+    <div>
+      <label for="name">Name</label>
+      <input id="name" name="name" type="text" required minlength="3" ngModel>
+    </div>
+    <div>
+      <label for="description">Description</label>
+      <textarea id="description" name="description" rows="4" cols="30" required ngModel></textarea>
+    </div>
+    <div>
+      <label for="category">Category</label>
+      <select id="category" name="category" required ngModel>
+        <option value="">Select category</option>
+        <option *ngFor="let category of categories" [value]="category.id">
+          {{ category.name }}
+        </option>
+      </select>
+    </div>
+    <div>
+      <label for="brand">Brand</label>
+      <input id="brand" name="brand" type="text" required minlength="3" ngModel>
+    </div>
+    <div>
+      <label for="price">Price</label>
+      <input id="price" name="price" type="number" required min="1" max="1000000" ngModel>
+    </div>
+    <div>
+      <input type="file" multiple class="file-upload" (change)="onChangeFileInput($event)" #fileUpload>
+      <button class="upload-btn" (click)="fileUpload.click()">Add image</button>
+    </div>
+    <div>
+      <button [disabled]="form.invalid" type="submit">Submit</button>
+    </div>
+  </form>
+</div>
