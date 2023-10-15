@@ -32,7 +32,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/auth', authRouter);
 app.use('/add', addRouter);
-app.use('/products', productsRouter);
+app.use('/product', productsRouter);
 app.use('/orders', ordersRouter);
 
 // catch 404 and forward to error handler

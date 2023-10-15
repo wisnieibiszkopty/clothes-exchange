@@ -26,7 +26,6 @@ export class AddComponent {
 
   constructor(private productService: ProductService) {}
 
-  // for some reason after clicking request is send
   onChangeFileInput(event: any){
     const file: File = event.target.files[0];
     if(file){

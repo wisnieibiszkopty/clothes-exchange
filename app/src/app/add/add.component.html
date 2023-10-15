@@ -31,7 +31,10 @@
     </div>
     <div>
       <input type="file" multiple class="file-upload" (change)="onChangeFileInput($event)" #fileUpload>
-      <button class="upload-btn" (click)="fileUpload.click()">Add image</button>
+      <button type="button" class="upload-btn" (click)="fileUpload.click()">Add image</button>
+      <div>
+        <img *ngFor="let file of files">
+      </div>
     </div>
     <div>
       <button [disabled]="form.invalid" type="submit">Submit</button>

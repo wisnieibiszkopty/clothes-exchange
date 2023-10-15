@@ -46,8 +46,9 @@ async function addUser(name, email, password){
 
 async function editUser(id, field, value){
     console.log("edittting!");
-    const sqlQuery = `UPDATE users SET ${field}=$1 WHERE id=$2`;
-    await pool.query(sqlQuery, [value, id]);
+    const sqlQuery = `UPDATE users SET ${field}=$1 WHERE id=$2 RETURNING ${field}`;
+    const result = await pool.query(sqlQuery, [value, id]);
+    return result.rows[0];
 }
 
 async function deleteUser(id){
@@ -59,15 +60,18 @@ async function deleteUser(id){
 }
 
 async function addProduct(product){
+    // getting date
     const currentDate = new Date();
     const formattedDate = currentDate.toISOString().split('T')[0];
-
     const sqlQuery = `INSERT INTO products 
     (name, description, category, brand, price, pictures, add_date, sold, owner_id) 
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`;
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id`;
     const parameters = [product.name, product.description, product.category, product.brand, product.price,
         product.filesNames, formattedDate, false, product.ownerId];
-    const result = await pool.query(sqlQuery, parameters);
+    try{
+        const result = await pool.query(sqlQuery, parameters);
+        return result.rows[0];
+    }   catch(err){ throw(err); }
 }
 
 async function editProduct(id, field, value){
@@ -85,7 +89,7 @@ async function deleteProduct(id){
 
 async function getProduct(id){
     try{
-        const sqlQuery = `SELECT products.*, users.name, users.picture FROM products INNER JOIN users ON
+        const sqlQuery = `SELECT products.*, users.name as username, users.picture FROM products INNER JOIN users ON
         products.owner_id = users.id WHERE products.id=$1`
         const results = await pool.query(sqlQuery, [id]);
         return results.rows;
@@ -95,17 +99,24 @@ async function getProduct(id){
 }
 
 // make query better
-async function getProducts(sort, order, page, filters){
-    const sqlQuery = `SELECT p.*, u.name, u.picture FROM products p
-    INNER JOIN users u ON p.owner_id = u.id`;
-    try{
-        const results = await pool.query(sqlQuery);
-        return results.rows;
-    } catch (err){
-        throw(err);
-    }
-
+async function getProducts(){
+    const products = await pool.query(`SELECT p.id, p.owner_id, p.price, u.picture,
+       p.pictures, p.name, u.name as username 
+    FROM products p INNER JOIN users u ON u.id=p.owner_id`);
+    return products.rows;
 }
+
+// async function getProducts(sort, order, page, filters){
+//     const sqlQuery = `SELECT p.*, u.name, u.picture FROM products p
+//     INNER JOIN users u ON p.owner_id = u.id`;
+//     try{
+//         const results = await pool.query(sqlQuery);
+//         return results.rows;
+//     } catch (err){
+//         throw(err);
+//     }
+//
+// }
 
 async function addReview(userId, reviewerId, rating){
     const sqlQuery = `INSERT INTO reviews (rating, user_id, reviewer_id) VALUES ($1, $2, $3)`;

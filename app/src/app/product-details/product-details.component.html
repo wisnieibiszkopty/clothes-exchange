@@ -1,1 +1,26 @@
-<p>product-details works!</p>
+<div class="prodcut-flex">
+  <div>
+    <h1>{{ product?.name }}</h1>
+    <h4>{{ product?.price }}</h4>
+    <!-- gallery -->
+    <div class="gallery">
+      <img *ngFor="let picture of product?.pictures" src="{{ picturesPath + picture }}" alt="{{ picture}}">
+    </div>
+    <div>
+      <p>{{ product?.category }}</p>
+      <p>{{ product?.brand }}</p>
+      <p>{{ product?.description }}</p>
+    </div>
+  </div>
+  <div>
+    <a><h2 (click)="routeToProfile()">{{ product?.username }}</h2></a>
+    <a><img (click)="routeToProfile()" src="{{ avatarPath + product?.picture }}" alt="{{ product?.username }}"></a>
+    <div *ngIf="product?.sold">
+      <p>Product was sold and is no longer available</p>
+    </div>
+    <div *ngIf="!product?.sold">
+      <button>Buy</button>
+      <button>Send message</button>
+    </div>
+  </div>
+</div>

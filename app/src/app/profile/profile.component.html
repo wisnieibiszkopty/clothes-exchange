@@ -1,12 +1,31 @@
 <main>
   <div>
-    <img src="{{ user?.pictureUrl }}" alt="{{ user?.name }}">
-    <h1>{{ user?.name }}</h1>
+      <img class="avatar" src="{{ user.pictureUrl }}" alt="{{ user.name }}">
+      <h1>{{ user.name }}</h1>
+      <div *ngIf="userId == id">
+        <a (click)="showSettings = !showSettings">Settings</a>
+      </div>
   </div>
   <div>
-    <p>{{ user?.description }}</p>
+    <p>{{ user.description }}</p>
   </div>
   <div>
     List of products here
   </div>
 </main>
+
+<div class="settings" *ngIf="showSettings">
+  <!-- add settings -->
+  <!-- email -->
+  <div></div>
+  <!-- password -->
+  <div></div>
+  <!-- description -->
+  <div>
+    <label for="description">Description: </label>
+    <textarea #description id="description">{{ user.description }}</textarea>
+    <button type="button" (click)="changeField('description', description.value)">Change description</button>
+  </div>
+  <!-- avatar -->
+  <div></div>
+</div>

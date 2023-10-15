@@ -8,12 +8,14 @@
     </div>
   </div>
   <div class="grid">
-    <app-product class="grid-item"></app-product>
-    <app-product class="grid-item"></app-product>
-    <app-product class="grid-item"></app-product>
-    <app-product class="grid-item"></app-product>
-    <app-product class="grid-item"></app-product>
-    <app-product class="grid-item"></app-product>
-    <app-product class="grid-item"></app-product>
+    <app-product class="grid-item" *ngFor="let products of products"
+                 [id]="products.id"
+                 [userId]="products.owner_id"
+                 [username]="products.username"
+                 [avatarSrc]="products.picture"
+                 [imgSrc]="products.pictures[0]"
+                 [name]="products.name"
+                 [price]="products.price"
+    ></app-product>
   </div>
 </main>

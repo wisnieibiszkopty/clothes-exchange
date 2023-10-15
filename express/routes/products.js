@@ -22,7 +22,7 @@ router.get('/:id', async (req, res, next) => {
       if(results.length === 0){
          res.sendStatus(404);
       } else{
-         res.json(results);
+         res.json(results[0]);
       }
    } catch(err){
       console.error(err);

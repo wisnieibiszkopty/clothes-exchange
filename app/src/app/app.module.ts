@@ -15,6 +15,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { ProductComponent } from './product/product.component';
 import { ProductDetailsComponent } from './product-details/product-details.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { ProductsListComponent } from './products-list/products-list.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
     ProfileComponent,
     ProductComponent,
     ProductDetailsComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    ProductsListComponent
   ],
     imports: [
         BrowserModule,

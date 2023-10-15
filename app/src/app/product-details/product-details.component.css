@@ -1,0 +1,13 @@
+.prodcut-flex{
+  display: flex;
+  justify-content: space-between;
+}
+
+.gallery img{
+  width: auto;
+  height: 300px;
+}
+
+a:hover{
+  cursor: pointer;
+}

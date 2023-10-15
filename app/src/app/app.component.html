@@ -1,3 +1,14 @@
+<!--
+  2. Add validation to login/registration forms
+  3. Add http reqeust for products and display them in browse component
+  6. Add more options for profile
+  7. In add component make images appear on side after loading them from computer
+  8. There is something wrong with sending request with params after ? - fix that
+  9. changeField works for now only for description
+
+  Kurwa debilu ogarnij zeby bylo id globalne i kurwa w product.service.ts dodawaj do body id
+-->
+
 <nav>
   <ng-container *ngIf="loggedIn; then logged; else notLogged"></ng-container>
   <ng-template #logged>
@@ -5,7 +16,7 @@
       <li><a [routerLink]="'/'">Home</a></li>
       <li><a [routerLink]="'/browse'">Browse</a></li>
       <li><a [routerLink]="'/add'">Add item</a></li>
-      <li><a [routerLink]="'/profile/' + id">Profile</a></li>
+      <li><a [routerLink]="['/profile/' + id]">Profile</a></li>
       <li><a (click)="logout()">Logout</a></li>
     </ul>
   </ng-template>

@@ -1,12 +1,13 @@
 <article>
   <div class="user-info">
-    <img>
-    <p>{{ title }}</p>
+    <img class="avatar" src="{{ avatarSrc }}" alt="{{ username}}" (click)="onUserClick()">
+    <p (click)="onUserClick()">{{ username }}</p>
   </div>
-  <div>
-    <img class="product-img" src="{{ imgSrc }}">
+  <div class="img-container">
+    <img class="product-img" src="{{ imgSrc }}" (click)="onProductClick()">
   </div>
-  <div class="product-info">
-    <p>placeholder placeholder</p>
+  <div class="product-info" (click)="onProductClick()">
+    <p>{{ name }}</p>
+    <p>{{ price }}</p>
   </div>
 </article>

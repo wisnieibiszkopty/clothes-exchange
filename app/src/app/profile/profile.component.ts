@@ -1,9 +1,11 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 
 import {User} from "../shared/user.model";
 import {UserService} from "../shared/services/user.service";
 import {environment} from "../../environments/environment.development";
+import {Product} from "../shared/product.model";
+import {AuthService} from "../shared/services/auth.service";
 
 // add editing and products list and the bottom
 
@@ -14,10 +16,13 @@ import {environment} from "../../environments/environment.development";
 })
 export class ProfileComponent implements OnInit{
   id: number = 0;
-  user: User | undefined = undefined;
-  products: any[] = [];
+  user: User = {};
+  products: Product[] = [];
+  userId: number | undefined;
+  showSettings: boolean = false;
 
-  constructor(private userService: UserService, private route: ActivatedRoute, private router: Router) {}
+  constructor(private userService: UserService, private authService: AuthService,
+              private route: ActivatedRoute, private router: Router) {}
 
   ngOnInit(){
     const id = this.route.snapshot.paramMap.get('id');
@@ -32,9 +37,13 @@ export class ProfileComponent implements OnInit{
         this.user = {
           'id': data.id,
           'name': data.name,
-          'pictureUrl': pictureUrl + data.picture,
           'description': data.description
         };
+        if(!(data.picture === "" || data.picture === null)){
+          this.user.pictureUrl = pictureUrl + data.picture;
+        } else {
+          this.user.pictureUrl = "assets/avatar.png";
+        }
         this.products = data.products;
       }),
       error: ((err) => {
@@ -42,6 +51,34 @@ export class ProfileComponent implements OnInit{
         this.router.navigate(['/notfound']);
       })
     });
+
+    this.authService.userId$.subscribe(
+    (id: number) => {
+      this.userId = id;
+    });
   }
 
+  changeField(type: string, value: string){
+    console.log(`id: ${this.userId}`);
+    console.log(`type: ${type}`);
+    console.log(`value: ${value}`);
+    this.userService.editProfile(this.userId, type, value).subscribe(
+      (data: any) => {
+        if(type === "email"){
+          this.user.email = data.value;
+        }
+        if(type === "description"){
+          this.user.description = data.value;
+        }
+      }
+    )
+  }
+
+  changePassword(){
+
+  }
+
+  changeAvatar(){
+
+  }
 }

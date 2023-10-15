@@ -28,8 +28,8 @@ router.put('/:id', async (req, res, next) => {
   const id = req.params.id;
 
   try{
-    await db.editUser(id, field, value);
-    res.status(200).send("Field edited");
+    const result = await db.editUser(id, field, value);
+    res.status(200).send(result);
   } catch(err){
     console.error(err.message);
     next(err);
