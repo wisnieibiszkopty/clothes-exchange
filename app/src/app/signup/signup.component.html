@@ -1,18 +1,18 @@
-<div>
+
   <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
-    <div>
+    <div class="input">
       <label for="name">Name</label>
       <input id="name" type="text" formControlName="name">
     </div>
-    <div>
+    <div class="input">
       <label for="email">E-mail</label>
       <input id="email" type="email" formControlName="email">
     </div>
-    <div>
+    <div class="input">
       <label for="password">Password</label>
       <input id="password" type="password" formControlName="password">
     </div>
-    <div>
+    <div class="input">
       <label for="repeatPassword">Repeat password</label>
       <input id="repeatPassword" type="password" formControlName="repeatPassword">
     </div>
@@ -20,4 +20,4 @@
       <button [disabled]="!signUpForm.valid"  type="submit">Sign in</button>
     </div>
   </form>
-</div>
+
