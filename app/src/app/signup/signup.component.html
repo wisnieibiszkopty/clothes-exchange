@@ -3,10 +3,21 @@
     <div class="input">
       <label for="name">Name</label>
       <input id="name" type="text" formControlName="name">
+      <div *ngIf="name.invalid && (name.dirty || name.touched)">
+        <p>Name field cannot be empty!</p>
+      </div>
     </div>
     <div class="input">
       <label for="email">E-mail</label>
       <input id="email" type="email" formControlName="email">
+      <div *ngIf="email.invalid && (email.dirty || email.touched)">
+        <div *ngIf="email.errors?.['required']">
+          <p>Email field cannot be empty</p>
+        </div>
+        <div *ngIf="email.errors?.['email']">
+          <p>This doesn't look like email address</p>
+        </div>
+      </div>
     </div>
     <div class="input">
       <label for="password">Password</label>

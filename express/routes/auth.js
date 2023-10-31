@@ -7,8 +7,9 @@ const db = require('../queries');
 // temporary
 const secretKey = 'twojastararobimiloda';
 
-router.get('/', async (req, res, next) => {
-    const { email, password } = req.query;
+router.post('/login', async (req, res, next) => {
+    const email = req.body.email;
+    const password = req.body.password;
 
     try{
         const data = await db.login(email);
@@ -33,7 +34,7 @@ router.get('/', async (req, res, next) => {
 
 });
 
-router.post('/', async (req, res, next) => {
+router.post('/signup', async (req, res, next) => {
    const name = req.body.name;
    const email = req.body.email;
    const password = req.body.password;
@@ -49,13 +50,13 @@ router.post('/', async (req, res, next) => {
                }
 
                // insert user to database
-               await db.addUser(name, email, hash);
+               const data = await db.addUser(name, email, hash);
 
                // generate jwt and add it to response
                const token = jwt.generateToken(email);
                console.log("token: " + token);
 
-               res.status(201).json({"token": token, "user": {"name": name, "email": email}});
+               res.status(201).json({"token": token, "id": data.id});
            });
 
        } else{

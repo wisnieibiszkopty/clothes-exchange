@@ -1,11 +1,25 @@
 <form [formGroup]="signInForm" (ngSubmit)="onSubmit()">
+  <div *ngIf="showError">
+    <p>{{ errorMessage }}</p>
+  </div>
   <div>
     <label for="email">E-mail</label>
-    <input id="email" type="email" formControlName="email">
+    <input id="email" type="email" formControlName="email" class="form-control">
+    <div *ngIf="email.invalid && (email.dirty || email.touched)">
+      <div *ngIf="email.errors?.['required']">
+        <p>Email field cannot be empty</p>
+      </div>
+      <div *ngIf="email.errors?.['email']">
+        <p>This doesn't look like email address</p>
+      </div>
+    </div>
   </div>
   <div>
     <label for="password">Password</label>
     <input id="password" type="password" formControlName="password">
+    <div *ngIf="password.invalid && (password.dirty || password.touched)">
+      <p>Password field cannot be empty</p>
+    </div>
   </div>
   <div>
     <button [disabled]="!signInForm.valid" type="submit">Submit</button>

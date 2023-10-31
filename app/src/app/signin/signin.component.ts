@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Output} from '@angular/core';
+import {Component, EventEmitter, Output, OnInit} from '@angular/core';
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { AuthService } from "../shared/services/auth.service";
 
@@ -9,18 +9,27 @@ import { AuthService } from "../shared/services/auth.service";
   templateUrl: './signin.component.html',
   styleUrls: ['./signin.component.css']
 })
-export class SigninComponent {
+export class SigninComponent implements OnInit{
   signInForm: FormGroup;
   @Output() signIdEmitter = new EventEmitter<number>();
+  showError: boolean = false;
+  errorMessage: string = "";
 
   constructor(private authService: AuthService) {
+  }
+
+  ngOnInit(){
     this.signInForm = new FormGroup({
-      "email": new FormControl('', [Validators.required, Validators.email]),
-      "password": new FormControl('', [Validators.required])
+      "email": new FormControl(null, [Validators.required, Validators.email]),
+      "password": new FormControl(null, [Validators.required])
     });
   }
 
+  get email() { return this.signInForm.get('email'); }
+  get password() { return this.signInForm.get('password'); }
+
   onSubmit(): void{
+    this.showError = false;
     const form = this.signInForm.value;
     this.authService.signIn(form).subscribe({
       next: (id: number): void => {
@@ -29,6 +38,8 @@ export class SigninComponent {
       },
       error: (err) => {
         console.error(err);
+        this.showError = true;
+        this.errorMessage = "Wrong email or password!";
       }
     })
   }

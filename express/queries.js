@@ -2,7 +2,7 @@ const { Pool } = require('pg');
 const pool = new Pool({
     user: 'ce_admin',
     host: 'localhost',
-    database: 'clothesexchange',
+    database: 'clothes_exchange',
     password: 'password',
     port: 5432,
 });
@@ -41,7 +41,11 @@ async function getUser(id){
 }
 
 async function addUser(name, email, password){
-    await pool.query(`INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING *;`, [name, email, password]);
+    const result = await pool.query(`INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id;`, [name, email, password]);
+    if(result.rows.length !== 0){
+        return result.rows[0];
+    }
+    return null;
 }
 
 async function editUser(id, field, value){

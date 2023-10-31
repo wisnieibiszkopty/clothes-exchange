@@ -1,10 +1,10 @@
 import { Injectable } from "@angular/core";
-import { HttpClient, HttpParams } from "@angular/common/http";
+import { HttpClient} from "@angular/common/http";
+import { Router } from "@angular/router";
 import {tap, map, Observable, BehaviorSubject} from "rxjs";
 
 import { environment} from "../../../environments/environment.development";
 
-// maybe would be better if it just returns id - done
 interface data{
   token: string;
   user: {
@@ -12,6 +12,8 @@ interface data{
     email: string;
   }
 }
+
+// rememeber to add experied data!!!
 
 @Injectable({providedIn: "root"})
 export class AuthService{
@@ -21,39 +23,44 @@ export class AuthService{
   private idSubject: BehaviorSubject<number> = new BehaviorSubject<number>(0);
   userId$: Observable<number> = this.idSubject.asObservable();
 
-  constructor(private http: HttpClient) {}
-
-  /*public get userId(){
-    return this._userId;
-  }*/
+  constructor(private http: HttpClient, private router: Router) {}
 
   public logout(){
     this.loggedInSubject.next(false);
   }
 
-  signUp(user: {name: string, email: string, password: string}): Observable<{name: string, email: string}>{
-    const url = environment.apiUrl + 'auth';
+  public restoreUserAuthData(id: number){
+      this.loggedInSubject.next(true);
+      this.idSubject.next(id);
+  }
+
+  // repair types
+  signUp(user: {name: string, email: string, password: string}): Observable<number>{
+    const url = environment.apiUrl + 'auth/signup';
     return this.http.post(url, user).pipe(
       tap((data: any) => {
         // add expiration date
         const token = data.token;
         sessionStorage.setItem("token", token);
+        sessionStorage.setItem("id", data.id);
+        this.idSubject.next(data.id);
+        this.loggedInSubject.next(true);
+        this.router.navigate(['profile/' + data.id]);
       }),
-      map((data: data) => data.user)
+      map((data: any) => data.id)
     );
   }
 
   signIn(user: {email: string, password: string}): Observable<number>{
-    const url = environment.apiUrl + 'auth';
-    const params = new HttpParams()
-      .set("email", user.email)
-      .set("password", user.password);
-    return this.http.get(url, {params}).pipe(
+    const url = environment.apiUrl + 'auth/login';
+    return this.http.post(url, user).pipe(
       tap((data: any) => {
         const token = data.token;
         sessionStorage.setItem("token", token);
+        sessionStorage.setItem("id", data.id);
         this.idSubject.next(data.id);
         this.loggedInSubject.next(true);
+        this.router.navigate(['profile/' + data.id]);
       }),
       map((data) => data.id)
     );

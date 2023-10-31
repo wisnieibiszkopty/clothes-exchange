@@ -16,6 +16,13 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(private authService: AuthService){}
 
   ngOnInit() {
+    const token = sessionStorage.getItem("token");
+    const id = sessionStorage.getItem("id");
+    if(token && id){
+      console.log("Logowanie automatyczne");
+      this.authService.restoreUserAuthData(Number(id));
+    }
+
     this.loggedInSubscription = this.authService.loggedIn$.subscribe(
       (loggedIn => { this.loggedIn = loggedIn; })
     );
